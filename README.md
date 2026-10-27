@@ -8,7 +8,7 @@ Un workflow n8n qui classe mes mails avec une IA, géré comme du code avec `n8n
 |---|---|
 | [`workflow/`](workflow/) | Le workflow n8n au format TypeScript (`.workflow.ts`) et sa description. |
 | [`skills/`](skills/) | Les 3 skills : `interview`, `doubt-driven-dev`, `hostile-review`. |
-| [`video/`](video/) | La vidéo de démo et son déroulé. |
+| [`video/`](video/) | La vidéo de démo (lien ci-dessous) et son transcript. |
 
 ## Le workflow
 
@@ -44,7 +44,7 @@ cp -R skills/* .agents/skills/      # OpenCode
 
 ## Gérer le workflow avec n8ncli
 
-[`n8ncli`](https://www.npmjs.com/package/n8ncli) synchronise les workflows n8n avec des fichiers TypeScript locaux. Il fournit aussi sa propre skill pour l'agent (`n8ncli import-skill`).
+[`n8ncli`](https://github.com/Workflows-Accelerator/n8n-cli) (paquet `@workflows-accelerator/n8n-cli`) synchronise les workflows n8n avec des fichiers TypeScript locaux. Il fournit aussi sa propre skill pour l'agent (`n8ncli import-skill`).
 
 | Commande | Rôle |
 |---|---|
@@ -55,6 +55,18 @@ cp -R skills/* .agents/skills/      # OpenCode
 | `n8ncli validate <fichier>` | Valide le fichier contre les schémas n8n. |
 | `n8ncli push --dry-run` | Montre ce qui serait envoyé, sans rien changer. |
 | `n8ncli push` | Envoie les modifications vers n8n. |
+
+## Vidéo de démo
+
+- **Lien** : [à compléter]
+- **Transcript** : [`video/transcript.md`](video/transcript.md) (à ajouter)
+
+La vidéo montre le workflow dans n8n, puis les commandes n8ncli dans le terminal, avec des explications. Le déroulé est dans [`video/README.md`](video/README.md).
+
+## Feedback du cours
+
+- **J'ai aimé** : [à compléter]
+- **J'aurais préféré** : [à compléter]
 
 ## Auteure
 

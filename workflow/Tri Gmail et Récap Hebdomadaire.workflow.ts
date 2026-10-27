@@ -45,7 +45,7 @@ const cat_gorie_valide = node({
 const ajouter_le_libell = node({
   type: 'n8n-nodes-base.gmail',
   version: 2.2,
-  config: { name: 'Ajouter le libellé', parameters: { operation: 'addLabels', messageId: expr('{{ $json.id }}'), labelIds: expr('{{ ({\n  "Perso": "Label_7608211392533718635",\n  "Sante": "Label_4465873117309527569",\n  "Administratif": "Label_7966674653170738862",\n  "Abonnements-Achats": "Label_1028769749919753753",\n  "Ecole": "Label_5247782185419227624",\n  "Alternance": "Label_5612279978427571918",\n  "Connexion": "Label_309303561687546891",\n  "Pub": "Label_92171380250459164",\n  "A-verifier": "Label_466087206804770809"\n})[$json.categorie] }}') }, credentials: { gmailOAuth2: newCredential('Gmail – Boîte perso', 'ppjvByNGWAuQ16tX') }, position: [1680, 16], webhookId: 'cdcb8275-3b49-41ad-ac8f-97616a96ec20' }
+  config: { name: 'Ajouter le libellé', parameters: { operation: 'addLabels', messageId: expr('{{ $json.id }}'), labelIds: expr('{{ ({\n  "Perso": "Label_7608211392533718635",\n  "Sante": "Label_4465873117309527569",\n  "Administratif": "Label_7966674653170738862",\n  "Abonnements-Achats": "Label_1028769749919753753",\n  "Ecole": "Label_5247782185419227624",\n  "Alternance": "Label_5612279978427571918",\n  "Connexion": "Label_309303561687546891",\n  "Pub": "Label_92171380250459164",\n  "A-verifier": "Label_466087206804770809"\n})[$json.categorie] }}') }, credentials: { gmailOAuth2: newCredential('Gmail – Boîte perso', 'ppjvByNGWAuQ16tX') }, position: [1680, 16], webhookId: 'cdcb8275-3b49-41ad-ac8f-97616a96ec20', onError: 'continueRegularOutput' }
 });
 
 const mettre_A_verifier = node({
