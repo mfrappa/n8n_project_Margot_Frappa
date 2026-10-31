@@ -47,7 +47,13 @@ Le détail est dans la sticky note « Specs » du workflow, et dans [`workflow/`
 
 ## Captures du workflow
 
-<!-- Ajouter ici les captures d'écran du workflow dans n8n, par exemple depuis un dossier images/ -->
+**Vue d'ensemble du workflow** (les trois zones : rattrapage, tri, récap du dimanche) :
+
+![Vue d'ensemble du workflow dans n8n](images/1-vue-ensemble-workflow.png)
+
+**Libellés Gmail après l'exécution** (les libellés Pub et Connexion sont vides, car les pubs et les codes de connexion ont été mis à la corbeille) :
+
+![Libellés Gmail](images/2-libelles-gmail.png)
 
 ## Commandes n8ncli
 
