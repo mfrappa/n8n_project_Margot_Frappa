@@ -1,29 +1,79 @@
 # Projet n8n : tri automatique de ma boîte Gmail
 
-Un workflow n8n qui classe mes mails avec une IA, géré comme du code avec `n8ncli`, et trois skills pour Claude Code / OpenCode qui encadrent la façon de le construire.
+Projet de Margot Frappa (École Eugenia). Un workflow n8n qui trie ma boîte Gmail personnelle grâce à une IA, géré comme du code avec `n8ncli`, et trois skills pour Claude Code qui encadrent la façon de construire un workflow.
 
-## Contenu du repo
+## Sommaire
 
-| Dossier | Contenu |
+1. [Vidéo de démo](#vidéo-de-démo)
+2. [Objectif du workflow](#objectif-du-workflow)
+3. [Architecture et grandes étapes](#architecture-et-grandes-étapes)
+4. [Captures du workflow](#captures-du-workflow)
+5. [Commandes n8ncli](#commandes-n8ncli)
+6. [Les 3 skills](#les-3-skills)
+7. [Contenu du repo](#contenu-du-repo)
+8. [Feedback du cours](#feedback-du-cours)
+
+## Vidéo de démo
+
+- **Vidéo** : [`video/video_n8n-compresse.mp4`](video/video_n8n-compresse.mp4) (9 min 55 s, 21 Mo)
+- **Transcription** : [`video/transcript.md`](video/transcript.md)
+
+La vidéo présente le workflow, puis les commandes n8ncli dans le terminal, et se termine par mon feedback sur le cours.
+
+## Objectif du workflow
+
+Trier automatiquement les mails de ma boîte Gmail personnelle : chaque mail reçoit un libellé grâce à une IA, et je reçois chaque dimanche un récap de la semaine.
+
+- **Entrée** : les mails qui arrivent dans ma boîte Gmail (nœud « Nouveaux mails »), et les anciens mails sans libellé (rattrapage manuel).
+- **Sortie** : chaque mail a un libellé (Perso, Santé, Administratif, Abonnements-Achats, Ecole, Alternance, Connexion, Pub, ou A-verifier), et un mail de récap m'est envoyé chaque dimanche.
+
+## Architecture et grandes étapes
+
+Le workflow est un seul fichier, découpé en deux parties.
+
+**1. Le tri des mails**
+- Un déclencheur toutes les 15 minutes pour les nouveaux mails, et un rattrapage manuel (par lots de 250) pour les anciens.
+- Chaque mail est classé par l'IA principale, **Jev 1.14** via OpenRouter.
+- Si Jev échoue, **Gemini** prend le relais (secours configuré).
+- Si la catégorie n'est pas valide ou si la confiance est trop basse, le mail part dans **A-verifier**.
+
+**2. Le récap du dimanche**
+- Déclenché chaque dimanche à 19 h.
+- Récupère les mails de la semaine, les importants non lus, les mails à vérifier et les pubs avec leurs liens de désabonnement.
+- Construit le récap et me l'envoie par mail.
+- Met à la corbeille les pubs et les codes de connexion. Les mails Santé, Administratif et Alternance ne sont jamais supprimés.
+
+Le détail est dans la sticky note « Specs » du workflow, et dans [`workflow/`](workflow/).
+
+## Captures du workflow
+
+<!-- Ajouter ici les captures d'écran du workflow dans n8n, par exemple depuis un dossier images/ -->
+
+## Commandes n8ncli
+
+[`n8ncli`](https://github.com/Workflows-Accelerator/n8n-cli) (paquet `@workflows-accelerator/n8n-cli`) fait le lien entre mon instance n8n et des fichiers TypeScript sur mon ordinateur.
+
+| Commande | Rôle |
 |---|---|
-| [`workflow/`](workflow/) | Le workflow n8n au format TypeScript (`.workflow.ts`) et sa description. |
-| [`skills/`](skills/) | Les 3 skills : `interview`, `doubt-driven-dev`, `hostile-review`. |
-| [`video/`](video/) | La vidéo de démo (lien ci-dessous) et son transcript. |
+| `n8ncli envs list` | Liste les instances n8n configurées. |
+| `n8ncli env test` | Vérifie les connexions (le serveur MCP répond). |
+| `n8ncli status` | Compare mes fichiers locaux à la dernière synchronisation. |
+| `n8ncli folders list` | Liste les dossiers du projet dans n8n. |
+| `n8ncli validate "<fichier>"` | Vérifie que le fichier respecte le schéma des nœuds n8n. |
+| `n8ncli diff "<fichier>"` | Compare le fichier local à la version dans n8n. |
+| `n8ncli pull` | Récupère les workflows depuis n8n en fichiers `.workflow.ts`. |
+| `n8ncli push --dry-run "<fichier>"` | Simule un envoi vers n8n, sans rien modifier. |
+| `n8ncli push "<fichier>"` | Envoie les modifications vers n8n. |
 
-## Le workflow
+Exemple :
 
-Il trie automatiquement ma boîte Gmail personnelle :
-- **toutes les 15 min**, chaque nouveau mail reçoit un libellé (Perso, Santé, Administratif, Abonnements & achats, École, Alternance, Connexion, Pub, ou À vérifier si l'IA n'est pas sûre) ;
-- **à la main**, un rattrapage classe les anciens mails par lots de 250 ;
-- **chaque dimanche à 19 h**, je reçois un récap par mail (nombre de mails par libellé, importants non lus, mails à vérifier, liens de désabonnement), puis les pubs et les vieux codes de connexion partent à la corbeille.
-
-IA principale : Jev 1.14 via OpenRouter. IA de secours : Gemini. Coût estimé : environ 0,02 $ par mois.
-
-Détails dans [`workflow/README.md`](workflow/README.md).
+```bash
+n8ncli validate "workflow/Tri Gmail et Récap Hebdomadaire.workflow.ts"
+```
 
 ## Les 3 skills
 
-Ensemble, elles couvrent tout le cycle de construction d'un workflow :
+Les skills sont dans [`skills/`](skills/). Ensemble, elles couvrent tout le cycle de construction d'un workflow :
 
 | Skill | Phase | Rôle |
 |---|---|---|
@@ -33,40 +83,25 @@ Ensemble, elles couvrent tout le cycle de construction d'un workflow :
 
 Chaque skill a un fichier `references/n8n.md` avec les questions, sondes et pièges propres à n8n.
 
-### Installer les skills
-
-Copier les dossiers de `skills/` dans le dossier de skills de son projet :
+Pour installer les skills dans son projet :
 
 ```bash
 cp -R skills/* .claude/skills/      # Claude Code
 cp -R skills/* .agents/skills/      # OpenCode
 ```
 
-## Gérer le workflow avec n8ncli
+## Contenu du repo
 
-[`n8ncli`](https://github.com/Workflows-Accelerator/n8n-cli) (paquet `@workflows-accelerator/n8n-cli`) synchronise les workflows n8n avec des fichiers TypeScript locaux. Il fournit aussi sa propre skill pour l'agent (`n8ncli import-skill`).
-
-| Commande | Rôle |
+| Dossier / fichier | Contenu |
 |---|---|
-| `n8ncli env test` | Vérifie la connexion à l'instance n8n. |
-| `n8ncli pull` | Récupère les workflows en `.workflow.ts`. |
-| `n8ncli status` | Montre ce qui a changé en local. |
-| `n8ncli diff <fichier>` | Compare le fichier local à la version dans n8n. |
-| `n8ncli validate <fichier>` | Valide le fichier contre les schémas n8n. |
-| `n8ncli push --dry-run` | Montre ce qui serait envoyé, sans rien changer. |
-| `n8ncli push` | Envoie les modifications vers n8n. |
-
-## Vidéo de démo
-
-- **Lien** : [à compléter]
-- **Transcript** : [`video/transcript.md`](video/transcript.md) (à ajouter)
-
-La vidéo montre le workflow dans n8n, puis les commandes n8ncli dans le terminal, avec des explications. Le déroulé est dans [`video/README.md`](video/README.md).
+| `README.md` | Ce document : le rendu complet. |
+| [`workflow/`](workflow/) | Le workflow n8n au format TypeScript (`.workflow.ts`). |
+| [`skills/`](skills/) | Les 3 skills : `interview`, `doubt-driven-dev`, `hostile-review`. |
+| [`video/`](video/) | La vidéo compressée et sa transcription. |
 
 ## Feedback du cours
 
-- **J'ai aimé** : [à compléter]
-- **J'aurais préféré** : [à compléter]
+Mon feedback sur le cours est à la fin de la vidéo, et il est aussi transcrit dans [`video/transcript.md`](video/transcript.md).
 
 ## Auteure
 
